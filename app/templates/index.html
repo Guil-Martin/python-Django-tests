@@ -8,6 +8,9 @@
 </head>
 <body>
     <h1>test page</h1>
+    {% if request.user.is_authenticated %}
+    <p>Hello {{ request.user }}</p>
+    {% endif %}
     <div class="container">
         {% for x in obj %}
         <p>

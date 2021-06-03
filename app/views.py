@@ -10,6 +10,7 @@ from .forms import CustomUserCreationForm
 
 def login_user(request):
     page = 'login'
+    title = 'Login'
     if request.method == 'POST':
         # Get info from form in templates.login_register.html
         username = request.POST['username']
@@ -24,7 +25,7 @@ def login_user(request):
             return redirect('index')    # Redirect to the route index by its name 
                                         # return so it dosen't render and don't redirect
 
-    return render(request, "login_register.html", {'page': page})
+    return render(request, "login_register.html", {'page': page, 'title': title})
 
 def logout_user(request):
     logout(request)
@@ -32,11 +33,12 @@ def logout_user(request):
 
 def register_user(request):
     page = 'register'
+    title = 'Register'
     form = CustomUserCreationForm()
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False) # commit to false won't login the user automatically
+            user = form.save(commit=False) # commit to false to be able to save at a later time
             user.save() # Save user in database
 
             user = authenticate(
@@ -48,14 +50,13 @@ def register_user(request):
                 return redirect('index')    # Redirect to the route index by its name 
                                             # return so it dosen't render and don't redirect
 
-    context = {'form': form, 'page': page}
+    context = {'form': form, 'page': page, 'title': title}
     return render(request, 'login_register.html', context)
 
 # Prevent index to be displayed and redirect to login page by name if a user is not authenticated
 @login_required(login_url='login')
 def index(request):
+    title = 'Index'
     obj=Student.objects.all()
-    context={
-        "obj": obj,
-    }
+    context = {"obj": obj, 'title': title}
     return render(request, "index.html", context)

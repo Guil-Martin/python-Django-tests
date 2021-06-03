@@ -1,28 +1,23 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index</title>
-</head>
-<body>
-    <h1>test page</h1>
-    {% if request.user.is_authenticated %}
-    <p>Hello {{ request.user }}</p>
-    <a href="{% url 'logout' %}">Logout</a>
-    {% endif %}
-    <div class="container">
-        {% for x in obj %}
-        <p>
-            {{x.name}}
-        </p>
-        <p>
-            {{x.des}}
-        </p>
-        <p>--------------------</p>
-        {% endfor %}
+{% extends "base/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="">
+        <h1>Index</h1>
+        {% if request.user.is_authenticated %}
+        <p>Hello {{ request.user }}</p>
+        <a href="{% url 'logout' %}">Logout</a>
+        {% endif %}
+        <div class="container">
+            {% for x in obj %}
+            <p>
+                {{x.name}}
+            </p>
+            <p>
+                {{x.des}}
+            </p>
+            <p>--------------------</p>
+            {% endfor %}
+        </div>
     </div>
-    
-</body>
-</html>
+</div>
+{% endblock %}

@@ -1,23 +1,41 @@
+from django.db import reset_queries
 from django.shortcuts import render, redirect
+from rest_framework.serializers import Serializer
 from .models import Student
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
-from .forms import CustomUserCreationForm
-
 # Third party imports
 from rest_framework.response import Response
 from rest_framework.views import APIView
+##
+
+from .forms import CustomUserCreationForm
+
+# API
+from .serializer import StudentSerializer
+from .models import Student
 
 class TestView(APIView):
     def get(self, request, *args, **kwargs):
-        data = {
-            'name':'jean',
-            'age':34
-        }
-        return Response(data)
+        qs = Student.objects.all()
+
+        student = qs.first() #Get first element of student
+        print("REQUEST")
+        print(student)
+        serializer = StudentSerializer(qs, many=True)
+        # To return only one student :
+        # serializer = StudentSerializer(student)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        serializer = StudentSerializer(data=request.data)
+        if serializer.is_valid(): # chezck if format of data is valid
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
 
 # Create your views here.
 

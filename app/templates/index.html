@@ -10,10 +10,13 @@
         <div class="container">
             {% for x in obj %}
             <p>
-                {{x.name}}
+                Name : {{x.name}}
             </p>
             <p>
-                {{x.des}}
+                Description : {{x.des}}
+            </p>
+            <p>
+                Owner : {{x.owner.username}}
             </p>
             <p>--------------------</p>
             {% endfor %}

@@ -3,8 +3,21 @@ from .models import Student
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 from .forms import CustomUserCreationForm
+
+# Third party imports
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+class TestView(APIView):
+    def get(self, request, *args, **kwargs):
+        data = {
+            'name':'jean',
+            'age':34
+        }
+        return Response(data)
 
 # Create your views here.
 
@@ -60,3 +73,11 @@ def index(request):
     obj=Student.objects.all()
     context = {"obj": obj, 'title': title}
     return render(request, "index.html", context)
+
+
+# def test_view(request):
+#     data = {
+#         'name':'jean',
+#         'age':34
+#     }
+#     return JsonResponse(data)

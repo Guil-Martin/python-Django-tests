@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DetailView
 from .models import Sale
 from .forms import SalesSearchForm
-
+from .utils import get_customer_from_id, get_salesman_from_id
 import pandas as pd
 
 # Create your views here.
@@ -20,6 +20,12 @@ def home(request):
         sales = Sale.objects.filter(created__date__lte=date_to, created__date__gte=date_from)
         if len(sales) > 0:
             sales_df = pd.DataFrame(sales.values()) # Dictionnary
+            sales_df['customer_id'] = sales_df['customer_id'].apply(get_customer_from_id)
+            sales_df['salesman_id'] = sales_df['salesman_id'].apply(get_salesman_from_id)
+            sales_df['created'] = sales_df['created'].apply(lambda x: x.strftime('%Y-%m-%d'))
+            sales_df.rename({   'customer_id': 'Customer', 
+                                'salesman_id': 'Salesman'}, 
+                                axis=1, inplace=True)
             sales_df = sales_df.to_html()
 
             position_data = []
@@ -36,10 +42,6 @@ def home(request):
 
             positions_df = pd.DataFrame(position_data)
             positions_df = positions_df.to_html()
-            
-            print(sales_df)
-        else:
-            print("########## no data ##########")
 
         # pd.DataFrame(sales.values_list()) # Tuples
 

@@ -10,8 +10,15 @@ Sales list
     {{ sale }}
 </p>
 <p>
-    <a href="{{ sale.get_absolute_url }}">{{ sale.transaction }}</a>
-    
+    <div class="card mb-3 bg-dark">
+        <a href="{{ sale.get_absolute_url }}" class="card-body">{{ sale.transaction }}</a>
+
+        {% comment %}
+        This would work also, but it's not really a better method :
+        <a href="{{ url 'sales:detail' sale.pk }}">{{ sale.transaction }}</a>
+        {% endcomment %}
+
+    </div>
 </p>
 {% endfor %}
 

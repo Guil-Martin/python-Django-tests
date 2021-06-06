@@ -1,10 +1,24 @@
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DetailView
 from .models import Sale
+from .forms import SalesSearchForm
+
 
 # Create your views here.
 def home(request):
-    return render(request, 'sales/home.html', {})
+    form = SalesSearchForm(request.POST or None)
+
+    if request.method == "POST":
+        date_from = request.POST.get('date_from')
+        date_to = request.POST.get('date_to')
+        chart_type = request.POST.get('chart_type')
+
+        qs = Sale.objects.filter(created__date=date_from)
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'sales/home.html', context)
 
 
 class SaleListView(ListView):

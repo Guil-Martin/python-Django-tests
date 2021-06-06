@@ -36,6 +36,11 @@ Sales
         {{ df|safe }}
     </div>  
 
+    <br>
+
+    Chart
+    <img src="data:image/png;base64, {{ chart|safe }}" alt="Chart">
+
     {% for sale in sales %}
     <div class="card mb-3 bg-dark">
         <a href="{{ sale.get_absolute_url }}" class="card-body">{{ sale.transaction }}</a>

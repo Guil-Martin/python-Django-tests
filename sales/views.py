@@ -2,8 +2,9 @@ from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DetailView
 from .models import Sale
 from .forms import SalesSearchForm
-from .utils import get_customer_from_id, get_salesman_from_id
+from .utils import get_customer_from_id, get_salesman_from_id, get_chart
 import pandas as pd
+
 
 # Create your views here.
 def home(request):
@@ -12,6 +13,7 @@ def home(request):
     positions_df = None
     merged_df = None
     df = None
+    chart = None
     sales = None    
 
     if request.method == "POST":
@@ -49,6 +51,8 @@ def home(request):
 
             df = merged_df.groupby('transaction', as_index=False)['price'].agg('sum')
 
+            chart = get_chart(chart_type, df, labels=df['transaction'].values)
+
             sales_df = sales_df.to_html()
             positions_df = positions_df.to_html()
             merged_df = merged_df.to_html()
@@ -60,6 +64,7 @@ def home(request):
         'positions_df': positions_df,
         'merged_df': merged_df,
         'df': df,
+        'chart': chart,
         'sales': sales,
     }
     return render(request, 'sales/home.html', context)

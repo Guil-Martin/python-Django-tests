@@ -18,9 +18,13 @@ from django.contrib import admin
 from django.urls import path
 from app.views import TestView, index, login_user, logout_user, register_user
 
+from rest_framework.authtoken.views import obtain_auth_token
+
 urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('api_test/', TestView.as_view(), name="api_test"),
+    path('api/token/', obtain_auth_token, name='obtain-token'),
+    path('rest-auth/', include('rest_auth.urls')),
     path('admin/', admin.site.urls),
     path('login/', login_user, name="login"),
     path('logout/', logout_user, name="logout"),

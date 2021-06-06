@@ -8,15 +8,15 @@
         <a href="{% url 'logout' %}">Logout</a>
         {% endif %}
         <div class="container">
-            {% for x in obj %}
+            {% for student in students %}
             <p>
-                Name : {{x.name}}
+                Name : {{ student.name }}
             </p>
             <p>
-                Description : {{x.des}}
+                Description : {{ student.des }}
             </p>
             <p>
-                Owner : {{x.owner.username}}
+                Owner : {{ student.owner.username }}
             </p>
             <p>--------------------</p>
             {% endfor %}

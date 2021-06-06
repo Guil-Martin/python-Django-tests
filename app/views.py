@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
 # Third party imports
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 ##
@@ -18,13 +19,14 @@ from .forms import CustomUserCreationForm
 from .serializer import StudentSerializer
 from .models import Student
 
+# Studens
 class TestView(APIView):
+
+    permission_classes = (IsAuthenticated, )
+
     def get(self, request, *args, **kwargs):
         qs = Student.objects.all()
-
-        student = qs.first() #Get first element of student
-        print("REQUEST")
-        print(student)
+        student = qs.first() # Get first element of student
         serializer = StudentSerializer(qs, many=True)
         # To return only one student :
         # serializer = StudentSerializer(student)
@@ -32,7 +34,7 @@ class TestView(APIView):
 
     def post(self, request, *args, **kwargs):
         serializer = StudentSerializer(data=request.data)
-        if serializer.is_valid(): # chezck if format of data is valid
+        if serializer.is_valid(): # check if format of data is valid else return error as json
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
@@ -88,8 +90,8 @@ def register_user(request):
 @login_required(login_url='login')
 def index(request):
     title = 'Index'
-    obj=Student.objects.all()
-    context = {"obj": obj, 'title': title}
+    qs=Student.objects.all()
+    context = {"students": qs, 'title': title}
     return render(request, "index.html", context)
 
 

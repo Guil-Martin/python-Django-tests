@@ -10,23 +10,26 @@ def home(request):
     form = SalesSearchForm(request.POST or None)
     sales_df = None
     positions_df = None
-    sales = None
+    merged_df = None
+    df = None
+    sales = None    
 
     if request.method == "POST":
         date_from = request.POST.get('date_from')
         date_to = request.POST.get('date_to')
         chart_type = request.POST.get('chart_type')
-
+        
         sales = Sale.objects.filter(created__date__lte=date_to, created__date__gte=date_from)
         if len(sales) > 0:
             sales_df = pd.DataFrame(sales.values()) # Dictionnary
+                     # pd.DataFrame(sales.values_list()) # Tuples
             sales_df['customer_id'] = sales_df['customer_id'].apply(get_customer_from_id)
             sales_df['salesman_id'] = sales_df['salesman_id'].apply(get_salesman_from_id)
             sales_df['created'] = sales_df['created'].apply(lambda x: x.strftime('%Y-%m-%d'))
-            sales_df.rename({   'customer_id': 'Customer', 
+            sales_df.rename({   'id': 'sales_id', 
+                                'customer_id': 'Customer', 
                                 'salesman_id': 'Salesman'}, 
                                 axis=1, inplace=True)
-            sales_df = sales_df.to_html()
 
             position_data = []
             for sale in sales:
@@ -41,14 +44,22 @@ def home(request):
                     position_data.append(obj)
 
             positions_df = pd.DataFrame(position_data)
-            positions_df = positions_df.to_html()
+            merged_df = pd.merge(sales_df, positions_df, on='sales_id') 
+            # "on" option needs to be the same key name for both the dataframes!
 
-        # pd.DataFrame(sales.values_list()) # Tuples
+            df = merged_df.groupby('transaction', as_index=False)['price'].agg('sum')
+
+            sales_df = sales_df.to_html()
+            positions_df = positions_df.to_html()
+            merged_df = merged_df.to_html()
+            df = df.to_html()        
 
     context = {
         'form': form,
         'sales_df': sales_df,
         'positions_df': positions_df,
+        'merged_df': merged_df,
+        'df': df,
         'sales': sales,
     }
     return render(request, 'sales/home.html', context)

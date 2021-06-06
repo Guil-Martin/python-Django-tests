@@ -14,14 +14,19 @@ class Position(models.Model):
     price = models.FloatField(blank=True)
     created = models.DateTimeField(blank=True)
 
-    # override save method to calculate price automatically by multiplying 
+    # override save method to calculate price automatically by multiplying
     # the chosen product price per the quantity before saving into the DB
     def save(self, *args, **kwargs):
         self.price = self.product.price * self.quantity
         return super().save(*args, **kwargs)
 
+    def get_sales_id(self):
+        sale_obj = self.sale_set.first()
+        return sale_obj.id
+
     def __str__(self):
         return f"id: {self.id}, product: {self.product.name}, quantity: {self.quantity} "
+
 
 class Sale(models.Model):
     transaction = models.CharField(max_length=12, blank=True)
@@ -43,10 +48,11 @@ class Sale(models.Model):
         return self.positions.all()
 
     def get_absolute_url(self):
-        return reverse("sales:detail", kwargs={"pk": self.pk})    
+        return reverse("sales:detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return f"Sales for the amount of ${self.total_price}"
+
 
 class CSV(models.Model):
     file_name = models.FileField(upload_to='csvs')

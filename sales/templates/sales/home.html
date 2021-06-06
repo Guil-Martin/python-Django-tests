@@ -12,4 +12,27 @@ Sales
     <button type="submit" class="btn btn-primary mt-3">Search</button>
 </form>
 
+<br>
+
+{% if sales_df %}
+
+    <div class="mb-3">
+        {{ sales_df|safe }}
+    </div>
+
+    <div class="mb-3">
+        {{ positions_df|safe }}
+    </div>  
+    
+    {% for sale in sales %}
+    <div class="card mb-3 bg-dark">
+        <a href="{{ sale.get_absolute_url }}" class="card-body">{{ sale.transaction }}</a>
+    </div>
+    {% endfor %}
+{% else %}
+
+    <h3>No data</h3>
+
+{% endif %}
+
 {% endblock content %}

@@ -5,12 +5,13 @@ Sales list
 {% block content %}
 Sales list
 
-{% for sale in Sales %}
+{% for sale in sales %}
 <p>
     {{ sale }}
 </p>
 <p>
-    {{ sale.transaction }}
+    <a href="{{ sale.get_absolute_url }}">{{ sale.transaction }}</a>
+    
 </p>
 {% endfor %}
 

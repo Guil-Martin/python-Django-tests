@@ -34,7 +34,8 @@ urlpatterns = [
     path('login/', login_user, name="login"),
     path('logout/', logout_user, name="logout"),
     path('register/', register_user, name="register"),
-    path('', index, name="index"),
+    path('', include('sales.urls', namespace='sales')),
+    # path('', index, name="index"),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

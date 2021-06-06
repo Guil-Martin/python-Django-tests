@@ -1,7 +1,17 @@
 {% extends "base.html" %}
 {% block title %}
-Sales
+Sales list
 {% endblock %}
 {% block content %}
+Sales list
+
+{% for sale in Sales %}
+<p>
+    {{ sale }}
+</p>
+<p>
+    {{ sale.transaction }}
+</p>
+{% endfor %}
 
 {% endblock content %}

@@ -2,13 +2,15 @@ from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DetailView
 from .models import Sale
 from .forms import SalesSearchForm
+from reports.forms import ReportForm
 from .utils import get_customer_from_id, get_salesman_from_id, get_chart
 import pandas as pd
 
 
 # Create your views here.
 def home(request):
-    form = SalesSearchForm(request.POST or None)
+    search_form = SalesSearchForm(request.POST or None)
+    report_form = ReportForm()
     sales_df = None
     positions_df = None
     merged_df = None
@@ -59,7 +61,8 @@ def home(request):
             df = df.to_html()        
 
     context = {
-        'form': form,
+        'search_form': search_form,
+        'report_form': report_form,
         'sales_df': sales_df,
         'positions_df': positions_df,
         'merged_df': merged_df,

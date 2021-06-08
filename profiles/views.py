@@ -2,6 +2,10 @@ from django.shortcuts import render
 from .models import Profile
 from .forms import ProfileForm
 
+from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.mixins import LoginRequiredMixin
+
+@login_required
 def my_profile_view(request):
 
     profile = Profile.objects.get(user=request.user)

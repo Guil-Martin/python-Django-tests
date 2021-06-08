@@ -10,10 +10,13 @@ from products.models import Product
 from customers.models import Customer
 import pandas as pd
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 import csv
 from django.utils.dateparse import parse_date
 
-# Create your views here.
+@login_required
 def home(request):
     search_form = SalesSearchForm(request.POST or None)
     report_form = ReportForm()
@@ -85,7 +88,7 @@ def home(request):
     return render(request, 'sales/home.html', context)
 
 
-class SaleListView(ListView):
+class SaleListView(LoginRequiredMixin, ListView):
     model = Sale
     template_name = 'sales/main.html'
 
@@ -97,7 +100,7 @@ class SaleListView(ListView):
 #     qs = Sale.objects.all()
 #     return render(request, 'sales/main.html', {'sales':qs})
 
-class SaleDetailView(DetailView):
+class SaleDetailView(LoginRequiredMixin, DetailView):
     model = Sale
     template_name = 'sales/detail.html'
 
@@ -111,9 +114,10 @@ class SaleDetailView(DetailView):
 #     sale = get_object_or_404(Sale, pk=pk)
 #     return render(request, 'sales/detail.html', {'sale':sale})
 
-class UploadTemplateView(TemplateView):
+class UploadTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'sales/from_file.html'
 
+@login_required
 def csv_upload_view(request):
     if request.method == "POST":
         csv_file_name = request.FILES.get('file').name

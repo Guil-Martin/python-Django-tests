@@ -1,3 +1,4 @@
+from django.db.models.base import Model
 from django.shortcuts import render
 from profiles.models import Profile
 from django.http import JsonResponse
@@ -5,7 +6,16 @@ from .utils import get_report_image
 from .models import Report
 from .forms import ReportForm
 
-# Create your views here.
+from django.views.generic import ListView, DetailView
+
+class ReportListView(ListView):
+    model = Report
+    template_name = "reports/main.html"
+
+class ReportDetailView(DetailView):
+    model = Report
+    template_name = "reports/detail.html"
+
 
 def create_report_view(request):
     form = ReportForm(request.POST or None)

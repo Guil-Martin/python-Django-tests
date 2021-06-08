@@ -3,12 +3,16 @@ from .views import (
     home,
     SaleListView,
     SaleDetailView,
+    UploadTemplateView,
+    csv_upload_view,
 ) 
 
 app_name = 'sales'
 
 urlpatterns = [
     path('', home, name='home'),
+    path('sales/from_file/', UploadTemplateView.as_view(), name='from-file'),
+    path('sales/upload/', csv_upload_view, name='upload'),
     path('sales/', SaleListView.as_view(), name='list'),
     path('sales/<pk>/', SaleDetailView.as_view(), name='detail'),
 ]

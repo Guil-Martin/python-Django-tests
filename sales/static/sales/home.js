@@ -1,19 +1,19 @@
-const reportBtn = document.getElementById('report-btn')
-const modalBody = document.getElementById('modal-body')
-const img = document.getElementById('img')
-const reportForm = document.getElementById('report-form')
-const alertBox = document.getElementById('alert-box')
+const reportBtn = document.getElementById('report-btn');
+const modalBody = document.getElementById('modal-body');
+const img = document.getElementById('img');
+const reportForm = document.getElementById('report-form');
+const alertBox = document.getElementById('alert-box');
 
-const reportName = document.getElementById('id_name')
-const reportRemarks = document.getElementById('id_remarks')
-const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value
+const reportName = document.getElementById('id_name');
+const reportRemarks = document.getElementById('id_remarks');
+const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
 
 const handleAlerts = (type, message) => {
     alertBox.innerHTML = `
     <div class="alert alert-${type}" role="alert">
         ${message}
     </div>
-    `
+    `;
 }
 
 reportBtn.addEventListener('click', () => {
@@ -33,12 +33,12 @@ reportBtn.addEventListener('click', () => {
             url: '/reports/save/',
             data: formData,
             success: function(response){
-                console.log(response)
-                handleAlerts('success', 'Report created')
+                console.log(response);
+                handleAlerts('success', 'Report created');
             },
             error: function(error){
-                console.log(error)
-                handleAlerts('danger', 'Something went wrong')
+                console.log(error);
+                handleAlerts('danger', 'Something went wrong');
             },
             processData: false,
             contentType: false

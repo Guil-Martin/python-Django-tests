@@ -1,11 +1,15 @@
+from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, render
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from .models import Sale
 from .forms import SalesSearchForm
 from reports.forms import ReportForm
 from .utils import get_customer_from_id, get_salesman_from_id, get_chart
 import pandas as pd
 
+from .models import Sale, Position, CSV
+import csv
+from django.utils.dateparse import parse_date
 
 # Create your views here.
 def home(request):
@@ -104,3 +108,28 @@ class SaleDetailView(DetailView):
 #               or
 #     sale = get_object_or_404(Sale, pk=pk)
 #     return render(request, 'sales/detail.html', {'sale':sale})
+
+class UploadTemplateView(TemplateView):
+    template_name = 'sales/from_file.html'
+
+def csv_upload_view(request):
+    if request.method == "POST":
+        csv_file = request.FILES.get('file')
+        obj = CSV.objects.create(file_name=csv_file)
+
+        with open(obj.file_name.path, 'r') as f:
+            reader = csv.reader(f)
+            reader.__next__()
+            for row in reader:
+                print(row, type(row))
+                data = "".join(row)
+                data = data.split(';')
+                data.pop()
+                
+                transaction = data[1]
+                product = data[2]
+                quantity = int([3])
+                customer = [4]
+                date = parse_date([5])
+
+    return HttpResponse()

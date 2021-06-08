@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load static %}
+{% block scripts %}
+<script src="{% static 'sales/home.js' %} " defer></script>
+{% endblock %}
 {% block title %}
 Sales
 {% endblock %}
@@ -24,6 +28,12 @@ Sales
         </div>
     </div>
 </div>
+
+{% if no_data %}
+    <div class="alert alert-warning" role="alert">
+        {{ no_data }}
+    </div>
+{% endif %}
 
 <form action="" method="post">
     {% csrf_token %}    
@@ -59,17 +69,13 @@ Sales
     
     <h3 class="mb-3">Chart</h3>
     <button class="btn btn-success mb-3" id="report-btn" data-bs-toggle="modal" data-bs-target="#report-modal">Add report</button>
-    <img src="data:image/png;base64, {{ chart|safe }}" alt="Chart" class="mb-3">
+    <img src="data:image/png;base64, {{ chart|safe }}" alt="Chart" class="mb-3" id="img">
 
     {% for sale in sales %}
     <div class="card mb-3 bg-dark">
         <a href="{{ sale.get_absolute_url }}" class="card-body" id="img">{{ sale.transaction }}</a>
     </div>
     {% endfor %}
-
-{% else %}
-
-    <h3>No data</h3>
 
 {% endif %}
 

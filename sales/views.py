@@ -17,6 +17,7 @@ def home(request):
     df = None
     chart = None
     sales = None    
+    no_data = None
 
     if request.method == "POST":
         date_from = request.POST.get('date_from')
@@ -59,7 +60,10 @@ def home(request):
             sales_df = sales_df.to_html()
             positions_df = positions_df.to_html()
             merged_df = merged_df.to_html()
-            df = df.to_html()        
+            df = df.to_html()
+
+        else:
+            no_data = "No data is available in this date range"
 
     context = {
         'search_form': search_form,
@@ -70,6 +74,7 @@ def home(request):
         'df': df,
         'chart': chart,
         'sales': sales,
+        'no_data': no_data,
     }
     return render(request, 'sales/home.html', context)
 

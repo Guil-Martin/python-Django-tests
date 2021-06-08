@@ -1,13 +1,15 @@
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DetailView, TemplateView
-from .models import Sale
+from .models import Sale, Position, CSV
 from .forms import SalesSearchForm
 from reports.forms import ReportForm
 from .utils import get_customer_from_id, get_salesman_from_id, get_chart
+from profiles.models import Profile
+from products.models import Product
+from customers.models import Customer
 import pandas as pd
 
-from .models import Sale, Position, CSV
 import csv
 from django.utils.dateparse import parse_date
 
@@ -114,22 +116,60 @@ class UploadTemplateView(TemplateView):
 
 def csv_upload_view(request):
     if request.method == "POST":
+        csv_file_name = request.FILES.get('file').name
         csv_file = request.FILES.get('file')
-        obj = CSV.objects.create(file_name=csv_file)
 
-        with open(obj.file_name.path, 'r') as f:
-            reader = csv.reader(f)
-            reader.__next__()
-            for row in reader:
-                print(row, type(row))
-                data = "".join(row)
-                data = data.split(';')
-                data.pop()
-                
-                transaction = data[1]
-                product = data[2]
-                quantity = int([3])
-                customer = [4]
-                date = parse_date([5])
+        # Prevent a file that has the same name from uploading again
+        obj, created = CSV.objects.get_or_create(file_name=csv_file_name)
+
+        if created:
+            obj.csv_file = csv_file
+            obj.save()
+            with open(obj.csv_file.path, 'r') as f:
+                reader = csv.reader(f)
+                reader.__next__()
+                for row in reader:
+                    # print(row)
+                    # data = "".join(row)
+                    # data = data.split(',')
+                    # print(data)
+                    # data.pop()
+                    # print(row)
+                    
+                    transaction = row[0]
+                    product = row[1]
+                    quantity = int(row[2])
+                    customer = row[3]
+                    date = parse_date(row[4])
+
+                    print("##################")
+                    print(transaction)
+                    print(product)
+                    print(quantity)
+                    print(customer)
+                    print(date)
+                    print("##################")
+
+                    try:
+                        product_obj = Product.objects.get(name__iexact=product)
+                    except Product.DoesNotExist:
+                        product_obj = None
+
+                    if product_obj is not None:
+                        # _ in the bool that says if the object has been created or not
+                        customer_obj, _ = Customer.objects.get_or_create(name=customer)
+                        salesman_obj = Profile.objects.get(user=request.user)
+                        position_obj = Position.objects.create(product=product_obj, quantity=quantity, created=date)
+
+                        sale_obj, _ = Sale.objects.get_or_create(
+                                    transaction=transaction, 
+                                    customer=customer_obj, 
+                                    salesman=salesman_obj, 
+                                    created=date)
+                        sale_obj.positions.add(position_obj)
+                        sale_obj.save()
+
+        # to be sent to upload.js for the alert box
+        return JsonResponse({'ex': created})
 
     return HttpResponse()

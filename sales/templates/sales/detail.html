@@ -4,8 +4,39 @@ Sale - {{ sale.transaction }}
 {% endblock %}
 {% block content %}
 
-{{ sale.pk }}
-<br>
-{{ sale.transaction }}
+<div class="row mt-3 mb-3">
+    <div class="col-3">
+        <img src="{{ sale.customer.logo }}" alt="{{ sale.customer.name }}" class="img-fluid">
+    </div>
+    <div class="col-9">
+        <ul>
+            <li>Transaction id: <strong>{{ sale.transaction }}</strong></li>
+            <li>Salesman: <strong>{{ sale.salesman.user.username }}</strong></li>
+        </ul>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Product</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Price</th>
+        <th scope="col">Customer</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for pos in sale.get_positions %}            
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ pos.product.name }}</td>
+                <td>{{ pos.quantity }}</td>
+                <td>{{ pos.price }}</td>
+                <td>{{ pos.get_sales_customer }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+  </table>
 
 {% endblock content %}

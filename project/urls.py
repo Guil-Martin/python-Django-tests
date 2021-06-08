@@ -36,6 +36,7 @@ urlpatterns = [
     path('register/', register_user, name="register"),
     path('', include('sales.urls', namespace='sales')),
     path('reports/', include('reports.urls', namespace='reports')),
+    path('my_profile/', include('profiles.urls', namespace='peofiles')),
     # path('', index, name="index"),
 ]
 

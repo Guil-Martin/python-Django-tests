@@ -1,12 +1,14 @@
 {% extends "base.html" %}
+
 {% block title %}
 Reports
 {% endblock %}
-{% block content %}
 
-{% for obj in object_list %}
-    
-    <h1>Reports</h1>
+{% block content %}
+<h1>Reports</h1>
+
+{% for obj in object_list %}  
+
     <div class="card mb-3">
         {% if obj.image %}
             <img src="{{ obj.image.url }}" class="card-img-top" alt="{{ obj.name }}">
@@ -18,6 +20,7 @@ Reports
             <a href="" class="btn btn-primary">Pdf</a>
         </div>
     </div>
+
 {% endfor %}
 
 {% endblock content %}

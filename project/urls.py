@@ -15,7 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from app.views import TestView, index, login_user, logout_user, register_user
+from app.views import (
+    TestView, 
+    index, 
+    login_user, 
+    logout_user, 
+    register_user
+)
+
+from .views import (
+    login_view,
+    logout_view,
+)
 
 from rest_framework.authtoken.views import obtain_auth_token
 
@@ -31,12 +42,14 @@ urlpatterns = [
     path('api/token/', obtain_auth_token, name='obtain-token'),
     path('rest-auth/', include('rest_auth.urls')),
     path('admin/', admin.site.urls),
-    path('login/', login_user, name="login"),
-    path('logout/', logout_user, name="logout"),
-    path('register/', register_user, name="register"),
+    # path('login/', login_user, name="login"),
+    # path('logout/', logout_user, name="logout"),
+    # path('register/', register_user, name="register"),
     path('', include('sales.urls', namespace='sales')),
     path('reports/', include('reports.urls', namespace='reports')),
     path('my_profile/', include('profiles.urls', namespace='peofiles')),
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),    
     # path('', index, name="index"),
 ]
 
